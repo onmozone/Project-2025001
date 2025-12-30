@@ -1,0 +1,5 @@
+{
+  "name": "Bangla Exam System",
+  "description": "A robust role-based quiz application with timed exams, admin controls, and Bengali localized UI following Prometric standards.",
+  "requestFramePermissions": []
+}

@@ -11,16 +11,26 @@ const LoginPage: React.FC<LoginProps> = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const users = db.getUsers();
-    const user = users.find(u => u.username === username && u.password === password);
+    setIsLoggingIn(true);
+    setError('');
     
-    if (user) {
-      onLogin(user);
-    } else {
-      setError('ভুল আইডি অথবা পাসওয়ার্ড');
+    try {
+      const users = await db.getUsers();
+      const user = users.find(u => u.username === username && u.password === password);
+      
+      if (user) {
+        onLogin(user);
+      } else {
+        setError('ভুল আইডি অথবা পাসওয়ার্ড');
+      }
+    } catch (err) {
+      setError('সার্ভার ত্রুটি, আবার চেষ্টা করুন');
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -44,7 +54,8 @@ const LoginPage: React.FC<LoginProps> = ({ onLogin }) => {
             <input
               type="text"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#004d40] focus:border-transparent transition-all outline-none"
+              disabled={isLoggingIn}
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#004d40] focus:border-transparent transition-all outline-none disabled:bg-gray-100"
               placeholder="আপনার আইডি লিখুন"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -56,7 +67,8 @@ const LoginPage: React.FC<LoginProps> = ({ onLogin }) => {
             <input
               type="password"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#004d40] focus:border-transparent transition-all outline-none"
+              disabled={isLoggingIn}
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#004d40] focus:border-transparent transition-all outline-none disabled:bg-gray-100"
               placeholder="পাসওয়ার্ড লিখুন"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -65,14 +77,16 @@ const LoginPage: React.FC<LoginProps> = ({ onLogin }) => {
           
           <button
             type="submit"
-            className="w-full bg-[#004d40] hover:bg-[#00332c] text-white font-semibold py-3 rounded transition-colors"
+            disabled={isLoggingIn}
+            className="w-full bg-[#004d40] hover:bg-[#00332c] text-white font-semibold py-3 rounded transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
           >
+            {isLoggingIn && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>}
             প্রবেশ করুন
           </button>
         </form>
         
         <div className="bg-gray-50 px-8 py-4 border-t border-gray-100 text-center">
-          <p className="text-xs text-gray-500">© ২০২৫ সর্বস্বত্ব সংরক্ষিত।</p>
+          <p className="text-xs text-gray-500">© ২০২৪ অনলাইন এক্সাম পোর্টাল। সর্বস্বত্ব সংরক্ষিত।</p>
         </div>
       </div>
     </div>

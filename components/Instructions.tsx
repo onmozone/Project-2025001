@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, QuestionSet } from '../types';
 
 interface InstructionsProps {
@@ -10,53 +10,108 @@ interface InstructionsProps {
 }
 
 const Instructions: React.FC<InstructionsProps> = ({ user, activeSet, onStart, onLogout }) => {
+  const [timeLeft, setTimeLeft] = useState(activeSet ? activeSet.timeLimit * 60 : 300);
+  
+  useEffect(() => {
+    const timer = setInterval(() => setTimeLeft(p => Math.max(0, p - 1)), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (s: number) => {
+    const min = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+  };
+
   return (
-    <div className="flex-1 bg-white p-6 max-w-4xl mx-auto w-full my-8 rounded-lg shadow-sm border border-gray-200">
-      <div className="border-b pb-4 mb-6 flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">পরীক্ষার নির্দেশাবলী</h1>
-          <p className="text-gray-600">স্বাগতম, {user.name}</p>
-        </div>
-        <button onClick={onLogout} className="text-red-600 hover:text-red-700 text-sm font-medium">লগআউট</button>
-      </div>
-
-      {!activeSet ? (
-        <div className="text-center py-12">
-          <p className="text-xl text-gray-500">বর্তমানে কোনো পরীক্ষা সক্রিয় নেই। অনুগ্রহ করে অ্যাডমিনের সাথে যোগাযোগ করুন।</p>
-        </div>
-      ) : (
-        <div className="space-y-6">
-          <div className="bg-blue-50 p-4 rounded-md border border-blue-100">
-            <h2 className="font-semibold text-blue-800 mb-2">পরীক্ষার তথ্য:</h2>
-            <ul className="list-disc list-inside text-blue-700 space-y-1">
-              <li>বিষয়: {activeSet.title}</li>
-              <li>সময়সীমা: {activeSet.timeLimit} মিনিট</li>
-              <li>মোট প্রশ্ন: {activeSet.questions.length} টি</li>
-            </ul>
+    <div className="flex-1 flex flex-col items-center justify-start bg-[#dbdbdb] overflow-hidden">
+      <div className="w-full max-w-[1150px] flex-1 flex flex-col bg-white border-x border-gray-400 shadow-2xl overflow-hidden relative">
+        
+        {/* Dark Header */}
+        <header className="bg-[#0e2a1e] text-white p-3 flex justify-between items-center shadow-md">
+          <div className="flex flex-col">
+            <span className="text-sm font-bold">পৃষ্ঠা: ১</span>
+            <span className="text-xs opacity-80">বিভাগ: {activeSet?.category || 'পরিচিতি'}</span>
           </div>
 
-          <div className="space-y-4 text-gray-700 leading-relaxed">
-            <h3 className="font-bold text-lg text-[#004d40]">সতর্কতা ও নিয়মাবলী:</h3>
-            <p>১. পরীক্ষা শুরু করার পর টাইমার সক্রিয় হবে। নির্দিষ্ট সময়ের মধ্যে উত্তর প্রদান নিশ্চিত করুন।</p>
-            <p>২. প্রতিটি প্রশ্নের জন্য ৪টি করে অপশন থাকবে। সঠিক অপশনটি নির্বাচন করে "এগিয়ে যান" বাটনে ক্লিক করুন।</p>
-            <p>৩. পরীক্ষা শেষ হওয়ার আগে উইন্ডো বন্ধ করবেন না বা রিফ্রেশ করবেন না। এতে আপনার পরীক্ষা বাতিল হয়ে যেতে পারে।</p>
-            <p>৪. সমস্ত প্রশ্ন উত্তর দেওয়ার পর "পরীক্ষা সমাপ্ত" বাটনে ক্লিক করে নিশ্চিত করুন।</p>
-            <p>৫. সময় শেষ হয়ে গেলে আপনার দেওয়া উত্তরগুলো স্বয়ংক্রিয়ভাবে জমা হয়ে যাবে এবং আপনি লগআউট হয়ে যাবেন।</p>
-          </div>
+          <div className="flex items-center gap-8">
+            <div className="flex items-center gap-2">
+               <div className="w-10 h-10 rounded-full border-2 border-white flex items-center justify-center">
+                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                 </svg>
+               </div>
+               <div className="flex flex-col">
+                 <span className="text-[10px] opacity-70">পরিচিতির জন্য সময় অবশিষ্ট:</span>
+                 <span className="text-xl font-mono font-bold leading-none text-yellow-400">{formatTime(timeLeft)}</span>
+               </div>
+            </div>
+            
+            <div className="flex flex-col items-end gap-1">
+               <div className="flex items-center gap-2">
+                 <span className="text-[10px] opacity-70">অতিবাহিত ১%</span>
+                 <div className="w-24 h-2 bg-gray-700 rounded-full overflow-hidden border border-gray-600">
+                   <div className="h-full bg-green-500" style={{ width: `1%` }}></div>
+                 </div>
+               </div>
+            </div>
 
-          <div className="pt-8 border-t flex justify-end">
-            <button
-              onClick={onStart}
-              className="bg-[#004d40] hover:bg-[#00332c] text-white px-8 py-3 rounded-md font-bold text-lg flex items-center gap-2 transition-transform active:scale-95 shadow-md"
+            <button 
+              onClick={onLogout}
+              className="bg-[#d34734] hover:bg-red-700 text-white px-4 py-1.5 rounded text-sm font-bold transition-colors shadow-md"
             >
-              পরীক্ষা শুরু করুন
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
+              পরীক্ষা সমাপ্ত...
             </button>
           </div>
+        </header>
+
+        {/* Sub Header */}
+        <div className="bg-[#f8f9fa] border-b px-4 py-1.5 text-[11px] font-bold text-gray-700 flex justify-between">
+          <span>পরীক্ষা: {activeSet?.title.split(' ')[0] || 'NUR'}</span>
+          <span>পরীক্ষার্থী: {user.name}</span>
         </div>
-      )}
+
+        {/* Instruction Content */}
+        <main className="flex-1 overflow-y-auto p-12 bg-white relative">
+          <div className="max-w-4xl mx-auto space-y-8">
+            <div className="flex justify-start">
+               <svg className="w-20 h-20 text-black transform -rotate-90" viewBox="0 0 24 24" fill="currentColor">
+                 <path d="M16 5V11H21L12 21L3 11H8V5H16Z" />
+               </svg>
+            </div>
+
+            <div className="space-y-6 text-gray-900 text-xl font-medium leading-relaxed">
+              <p className="font-bold text-2xl">সময় বাকি আছে,</p>
+              <p className="flex items-center gap-2">
+                এই আইকন <svg className="w-6 h-6 inline" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"/></svg> কি পরিমান সময় বাকি আছে তা নির্দেশ করে। পরীক্ষা বিভাগের ৩০ মিনিটের একটি টাইমার রয়েছে।
+              </p>
+              <p className="font-bold border-b-2 border-black inline-block pb-1">পরীক্ষার মধ্য দিয়ে নেভিগেট করা হয়।</p>
+              <p>পরবর্তী প্রশ্ন যাওয়ার জন্য <span className="text-[#007b8a] font-bold">"এগিয়ে যান" &gt;</span> বাটনে ক্লিক করুন।</p>
+              <p>আগের প্রশ্নে ফিরে যাওয়ার জন্য <span className="text-[#007b8a] font-bold">&lt; "ফেরত যান"</span> বাটনে ক্লিক করুন।</p>
+              <p className="font-bold border-b-2 border-black inline-block pb-1">প্রশ্নগুলির উত্তর দেওয়া।</p>
+              <p>সঠিক উত্তর নির্বাচন করার জন্য অপশনগুলির মধ্যে থেকে আপনার ধারণা অনুযায়ী সঠিক উত্তরটি নির্বাচন করুন এবং পরবর্তী ধাপে এগিয়ে যান।</p>
+            </div>
+          </div>
+
+          {/* Scroll Hint */}
+          <div className="absolute bottom-6 right-12 bg-black text-white px-5 py-2.5 rounded-md shadow-2xl flex items-center gap-2 text-xs font-bold animate-bounce">
+            <span>এই পৃষ্ঠাটির স্ক্রলিং প্রয়োজন</span>
+            <div className="w-4 h-4 rounded-full border border-white flex items-center justify-center">
+              <div className="w-1 h-2 bg-white rounded-full"></div>
+            </div>
+          </div>
+        </main>
+
+        {/* Footer */}
+        <footer className="bg-[#0e2a1e] p-3 border-t border-teal-900 flex justify-end">
+          <button 
+            onClick={onStart}
+            className="bg-[#cbd5e0] hover:bg-gray-200 text-gray-900 px-10 py-2 rounded-md font-bold text-sm transition-colors flex items-center gap-2 shadow-inner"
+          >
+            পরীক্ষা শুরু করুন &gt;
+          </button>
+        </footer>
+      </div>
     </div>
   );
 };

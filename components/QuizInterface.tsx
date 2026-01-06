@@ -139,7 +139,7 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({ user, questionSet, onFini
           </div>
 
           <div className="flex items-center gap-8">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <svg className="w-8 h-8 inline" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" /></svg>
               <div className="flex flex-col">
                 <span className="text-[10px] opacity-70">পরিচিতির জন্য সময় অবশিষ্ট:</span>
@@ -150,11 +150,11 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({ user, questionSet, onFini
             </div>
 
             <div className="flex flex-col items-center gap-1">
+              <div className="w-24 h-2 bg-gray-700 rounded-full overflow-hidden border border-gray-600">
+                <div className="h-full bg-green-500 transition-all duration-300" style={{ width: `${isFinished ? 100 : progressPercent}%` }}></div>
+              </div>
               <div className="flex items-center gap-2">
-                <div className="w-32 h-2.5 bg-gray-600 rounded-full overflow-hidden border border-gray-500">
-                  <div className="h-full bg-green-500 transition-all duration-300" style={{ width: `${isFinished ? 100 : progressPercent}%` }}></div>
-                </div>
-                <span className="text-[10px] opacity-90 whitespace-nowrap">অতিবাহিত {isFinished ? '১০০' : progressPercent}%</span>
+                <span className="text-[10px] opacity-90">অতিবাহিত {isFinished ? '১০০' : progressPercent}%</span>
               </div>
             </div>
 
@@ -319,37 +319,37 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({ user, questionSet, onFini
 
         {/* Footer */}
         {!isFinished && (
-        <footer className="bg-[#0e2a1e] p-3 flex justify-end gap-3 border-t border-teal-900">
-          <button
-            onClick={() => {
-              if (showInstructions) { setShowInstructions(false); return; }
-              if (currentIndex > 0) setCurrentIndex(prev => prev - 1);
-            }}
-            disabled={!showInstructions && currentIndex === 0}
-            className="flex items-center gap-2 px-8 py-1.5 bg-[#cbd5e0] hover:bg-gray-300 text-gray-900 rounded-md disabled:opacity-30 disabled:cursor-not-allowed font-bold text-sm"
-          >
-            &lt; ফেরত যান
-          </button>
-          {!isFinished && (
+          <footer className="bg-[#0e2a1e] p-3 flex justify-end gap-3 border-t border-teal-900">
             <button
               onClick={() => {
-                if (showInstructions) {
-                  setShowPreConfirmModal(true);
-                  return;
-                }
-                if (currentIndex < questionSet.questions.length - 1) {
-                  setCurrentIndex(prev => prev + 1);
-                } else {
-                  setShowInstructions(true);
-                }
+                if (showInstructions) { setShowInstructions(false); return; }
+                if (currentIndex > 0) setCurrentIndex(prev => prev - 1);
               }}
-              disabled={showInstructions}
-              className="flex items-center gap-2 px-8 py-1.5 bg-[#cbd5e0] hover:bg-gray-300 text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed rounded-md font-bold text-sm"
+              disabled={!showInstructions && currentIndex === 0}
+              className="flex items-center gap-2 px-8 py-1.5 bg-[#cbd5e0] hover:bg-gray-300 text-gray-900 rounded-md disabled:opacity-30 disabled:cursor-not-allowed font-bold text-sm"
             >
-              এগিয়ে যান &gt;
+              &lt; ফেরত যান
             </button>
-          )}
-        </footer>
+            {!isFinished && (
+              <button
+                onClick={() => {
+                  if (showInstructions) {
+                    setShowPreConfirmModal(true);
+                    return;
+                  }
+                  if (currentIndex < questionSet.questions.length - 1) {
+                    setCurrentIndex(prev => prev + 1);
+                  } else {
+                    setShowInstructions(true);
+                  }
+                }}
+                disabled={showInstructions}
+                className="flex items-center gap-2 px-8 py-1.5 bg-[#cbd5e0] hover:bg-gray-300 text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed rounded-md font-bold text-sm"
+              >
+                এগিয়ে যান &gt;
+              </button>
+            )}
+          </footer>
         )}
 
         {/* Pre-Confirmation Modal (Step 1) */}

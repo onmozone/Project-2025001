@@ -15,6 +15,11 @@ const Instructions: React.FC<InstructionsProps> = ({ user, activeSet, onStart, o
   const toBnNumber = (num: number) =>
     num.toString().replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[Number(d)]);
 
+  useEffect(() => {
+    if (activeSet) {
+      setTimeLeft(activeSet.timeLimit * 60);
+    }
+  }, [activeSet]);
 
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft(p => Math.max(0, p - 1)), 1000);
@@ -104,7 +109,7 @@ const Instructions: React.FC<InstructionsProps> = ({ user, activeSet, onStart, o
               <p className="leading-relaxed">
                 এই আইকন
                 <svg
-                  className="w-6 h-6 inline align-text-center m-1"
+                  className="w-6 h-6 inline align-middle mx-1"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -114,7 +119,7 @@ const Instructions: React.FC<InstructionsProps> = ({ user, activeSet, onStart, o
                     clipRule="evenodd"
                   />
                 </svg>
-                কি পরিমান সময় বাকি আছে তা নির্দেশ করে। পরীক্ষা বিভাগের {activeSet ? toBnNumber(activeSet.timeLimit) : '৩০'} 
+                কি পরিমান সময় বাকি আছে তা নির্দেশ করে। পরীক্ষা বিভাগের {" "} {activeSet ? toBnNumber(activeSet.timeLimit) : '৩০'}
                 {" "}মিনিটের একটি টাইমার রয়েছে।
               </p>
 

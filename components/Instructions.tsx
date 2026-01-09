@@ -97,9 +97,19 @@ const Instructions: React.FC<InstructionsProps> = ({ user, activeSet, onStart, o
 
             <div className="space-y-6 text-gray-900 text-lg font-medium leading-relaxed">
               <p className="font-bold text-xl">সময় বাকি আছে,</p>
-              <p className="flex items-center gap-2">
-                এই আইকন <svg className="w-6 h-6 inline" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" /></svg> কি পরিমান সময় বাকি আছে তা নির্দেশ করে। পরীক্ষা বিভাগের ৩০ মিনিটের একটি টাইমার রয়েছে।
+              <p className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1 whitespace-nowrap">
+                  এই আইকন
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                  </svg>
+                </span>
+
+                <span>
+                  কি পরিমান সময় বাকি আছে তা নির্দেশ করে। পরীক্ষা বিভাগের ৩০ মিনিটের একটি টাইমার রয়েছে।
+                </span>
               </p>
+
               <p className="font-bold border-b-2 border-black inline-block pb-1">পরীক্ষার মধ্য দিয়ে নেভিগেট করা হয়।</p>
               <p>পরবর্তী প্রশ্ন যাওয়ার জন্য <span className="text-[#007b8a] font-bold">"এগিয়ে যান" &gt;</span> বাটনে ক্লিক করুন।</p>
               <p>আগের প্রশ্নে ফিরে যাওয়ার জন্য <span className="text-[#007b8a] font-bold">&lt; "ফেরত যান"</span> বাটনে ক্লিক করুন।</p>

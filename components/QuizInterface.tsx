@@ -85,7 +85,7 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({ user, questionSet, onFini
   //   return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   // };
 
-    const formatTime = (seconds: number) => {
+  const formatTime = (seconds: number) => {
     // const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = Math.max(0, seconds % 60);
@@ -179,7 +179,7 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({ user, questionSet, onFini
               {isFinished ? (isSubmitting ? 'জমা দেওয়া হচ্ছে...' : 'পরীক্ষা সমাপ্ত..') : 'পরীক্ষা সমাপ্ত...'}
             </button>
           </div>
-          
+
         </header>
 
         {/* Info Bar */}
@@ -207,15 +207,26 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({ user, questionSet, onFini
           ) : (
             <>
               {/* Sidebar */}
-              <aside className="w-16 border-r flex flex-col items-center py-4 gap-2 sidebar-scroll overflow-y-auto">
+              <aside className="w-20 border-r flex flex-col items-center py-4 gap-2 sidebar-scroll overflow-y-auto">
                 {questionSet.questions.map((q, idx) => (
                   <button
                     key={q.id}
                     onClick={() => { setShowInstructions(false); setCurrentIndex(idx); }}
+                    // className={`
+                    //   w-12 h-10 rounded-sm flex items-center justify-center text-sm font-bold transition-all
+                    //   ${!showInstructions && currentIndex === idx ? 'bg-[#007b8a] text-white' : 'bg-[#f0f0f0] text-gray-600 hover:bg-gray-400 hover:text-white'}
+                    //   ${answers[q.id] ? 'relative after:bg-[#f0f0f0] after:absolute after:bottom-0 after:right-0 after:w-2 after:h-2 after:bg-green-600 after:rounded-full after:border after:border-white' : ''}
+                    // `}
+
                     className={`
-                      w-10 h-10 rounded-sm flex items-center justify-center text-sm font-bold transition-all
-                      ${!showInstructions && currentIndex === idx ? 'bg-[#007b8a] text-white' : 'bg-[#f0f0f0] text-gray-600 hover:bg-gray-200'}
-                      ${answers[q.id] ? 'relative after:content-[""] after:absolute after:bottom-0 after:right-0 after:w-2 after:h-2 after:bg-green-600 after:rounded-full after:border after:border-white' : ''}
+                      w-14 h-10 p-1  rounded-sm flex items-center justify-center text-sm font-bold transition-all
+                      ${!showInstructions && currentIndex === idx
+                        ? 'relative bg-[#007b8a] text-gray-900 after:content-[\'\'] after:absolute after:top-1/2  after:-translate-y-1/2 after:border-t-[5px] after:border-b-[5px] after:border-l-[6px] after:right-[-5px] after:border-t-transparent after:border-b-transparent after:border-l-[#007b8a]'
+                        : answers[q.id]
+                          ? 'bg-[#007b8a] text-white'
+                          : 'bg-transparent text-gray-600 hover:bg-gray-400 hover:text-white'
+
+                      }
                     `}
                   >
                     {idx + 1}
@@ -223,7 +234,7 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({ user, questionSet, onFini
                 ))}
                 <button
                   onClick={() => setShowInstructions(true)}
-                  className={`mt-2 w-10 h-10 rounded-sm flex items-center justify-center text-sm font-bold transition-all ${showInstructions ? 'bg-[#007b8a] text-white' : 'bg-purple-700 text-white'}`}
+                  className={`mt-0 w-10 h-10 p-1  rounded-2xl flex items-center justify-center text-sm font-bold transition-all hover:bg-red-800 hover:text-white ${showInstructions ? 'bg-[#9C2007] text-gray-900' : 'bg-red-600 text-white'}`}
                 >
                   i
                 </button>
